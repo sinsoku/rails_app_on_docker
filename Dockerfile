@@ -11,8 +11,17 @@ FROM app-base AS builder
 RUN apk update && apk add --update \
      build-base yarn postgresql-dev tzdata git
 
-COPY . .
+# Install gems
+COPY Gemfile .
+COPY Gemfile.lock .
 RUN bundle install
+
+# Install npm packages
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install
+
+COPY . .
 
 # Set a dummy value to avoid errors when building docker image.
 # refs: https://github.com/rails/rails/issues/32947
