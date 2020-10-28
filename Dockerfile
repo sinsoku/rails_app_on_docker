@@ -1,18 +1,12 @@
-FROM ruby:2.7.2
+FROM ruby:2.7.2-alpine3.12
 
 WORKDIR /app
 ENV RAILS_ENV production
 ENV BUNDLE_WITHOUT development:test
 
-# Using Node.js v12.x(LTS)
-# refs: https://github.com/nodesource/distributions/blob/9dcbaaec9a6f3d482ec6897a6c351faaa195d21b/README.md
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-
 # Add packages
-RUN apt-get update && apt-get install -y nodejs
-
-# Add yarnpkg for assets:precompile
-RUN npm install -g yarn
+RUN apk update && apk add --update \
+     build-base yarn postgresql-dev tzdata git
 
 COPY . .
 RUN bundle install
