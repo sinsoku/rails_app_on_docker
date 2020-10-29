@@ -48,3 +48,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 group :development, :test do
   gem 'rspec-rails'
 end
+
+group :test do
+  gem 'capybara'
+  gem 'selenium-webdriver'
+end
