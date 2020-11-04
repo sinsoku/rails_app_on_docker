@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  web:
+    build: .docker
+    tmpfs:
+      - /tmp
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app:cached
+      - rails_cache:/app/tmp/cache
+      - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - packs:/app/public/packs
+      - packs_test:/app/public/packs-test
+    environment:
+      EDITOR: vim
+      HISTFILE: "/app/log/.bash_history"
+      DATABASE_URL: "postgres://postgres:@db"
+      BOOTSNAP_CACHE_DIR: "/usr/local/bundle"
+    depends_on:
+      - db
+    command: ["bin/rails", "server", "-b", "0.0.0.0"]
+    expose: ["3000"]
+    ports:
+      - "127.0.0.1:3000:3000"
+    working_dir: /app
+
+volumes:
+  db:
+  rails_cache:
+  bundle:
+  node_modules:
+  packs:
+  packs_test:

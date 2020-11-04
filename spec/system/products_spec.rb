@@ -12,7 +12,9 @@ RSpec.describe "Products", type: :system do
 
 
   it "renders a page on :headless_chrome", js: true do
-    driven_by(:selenium, using: :headless_chrome)
+    driven_by(:selenium, using: :headless_chrome) do |capabilities|
+      capabilities.args << "--no-sandbox"
+    end
     visit root_path
 
     within("h1") do
